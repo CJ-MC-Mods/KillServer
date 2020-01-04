@@ -2,9 +2,9 @@ package com.cjm721.killserver;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Mod("killserver")
+@Mod(modid = "killserver", version = "2.0")
 public class KillServer {
   private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,8 +24,7 @@ public class KillServer {
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  // You can use SubscribeEvent and let the Event Bus discover methods to call
-  @SubscribeEvent
+  @Mod.EventHandler
   public void onServerStarting(FMLServerStartingEvent event) {
     Thread serverThread = Thread.currentThread();
     Thread watcherThread = new Thread(() -> watchServer(event.getServer(), serverThread));
@@ -42,7 +41,7 @@ public class KillServer {
         try {
           Executors.newCachedThreadPool().submit(() -> {
             try {
-              server.save(false, true, true);
+              server.saveAllWorlds(false);
             } catch (Exception e) {
               LOGGER.fatal("Exception thrown while saving.", e);
               e.printStackTrace();
@@ -69,7 +68,7 @@ public class KillServer {
           LOGGER.fatal("----------------------------------");
         }
         LOGGER.fatal("KILLING NOW");
-        System.exit(2);
+        FMLCommonHandler.instance().exitJava(10, true);
       }
       sleepWait();
     }

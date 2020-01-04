@@ -1,0 +1,13 @@
+[
+  {
+    "modid": "killserver",
+    "name": "KillServer",
+    "description": "Watches the Server and will kill it if the main thread has died",
+    "version": "$2.0",
+    "mcversion": "1.12.2",
+    "url": "https://github.com/CJ-MC-Mods/killserver",
+    "authorList": [
+      "CJ Miller (cjm721)"
+    ]
+  }
+]
