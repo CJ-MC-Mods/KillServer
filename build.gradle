@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'idea'
 
-version = '2.0'
+version = '2.1'
 group = 'com.cjm721.killserver'
 archivesBaseName = 'killserver'
 

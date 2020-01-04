@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Mod(modid = "killserver", version = "2.0")
+@Mod(modid = "killserver", version = "2.1", serverSideOnly = true, acceptableRemoteVersions = "*", useMetadata = true)
 public class KillServer {
   private static final Logger LOGGER = LogManager.getLogger();
 
