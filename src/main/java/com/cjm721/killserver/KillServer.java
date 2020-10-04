@@ -2,9 +2,11 @@ package com.cjm721.killserver;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,16 +17,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Mod(modid = "killserver", version = "2.1", serverSideOnly = true, acceptableRemoteVersions = "*", useMetadata = true)
+@Mod("killserver")
 public class KillServer {
   private static final Logger LOGGER = LogManager.getLogger();
 
   public KillServer() {
-    // Register ourselves for server and other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  @Mod.EventHandler
+  @SubscribeEvent
   public void onServerStarting(FMLServerStartingEvent event) {
     Thread serverThread = Thread.currentThread();
     Thread watcherThread = new Thread(() -> watchServer(event.getServer(), serverThread));
@@ -41,7 +42,7 @@ public class KillServer {
         try {
           Executors.newCachedThreadPool().submit(() -> {
             try {
-              server.saveAllWorlds(false);
+              server.save(false, true, true);
             } catch (Exception e) {
               LOGGER.fatal("Exception thrown while saving.", e);
               e.printStackTrace();
@@ -68,7 +69,7 @@ public class KillServer {
           LOGGER.fatal("----------------------------------");
         }
         LOGGER.fatal("KILLING NOW");
-        FMLCommonHandler.instance().exitJava(10, true);
+        System.exit(10);
       }
       sleepWait();
     }
