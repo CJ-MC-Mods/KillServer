@@ -1,12 +1,8 @@
 package com.cjm721.killserver;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,18 +13,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Mod("killserver")
-public class KillServer {
+public class KillServer implements ModInitializer {
   private static final Logger LOGGER = LogManager.getLogger();
 
-  public KillServer() {
-    MinecraftForge.EVENT_BUS.register(this);
+  @Override
+  public void onInitialize() {
+    ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
   }
 
-  @SubscribeEvent
-  public void onServerStarting(FMLServerStartingEvent event) {
-    Thread serverThread = Thread.currentThread();
-    Thread watcherThread = new Thread(() -> watchServer(event.getServer(), serverThread));
+  public void onServerStarting(MinecraftServer server) {
+    Thread watcherThread = new Thread(() -> watchServer(server, server.getThread()));
     watcherThread.setDaemon(true);
     watcherThread.setName("KillServer");
     watcherThread.start();
